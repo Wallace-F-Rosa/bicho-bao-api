@@ -15,4 +15,4 @@ Esta API REST funcionará como Gateway para os microsserviços com as funcionali
 
 # Esquema lógico do banco de dados
 
-![bicho bão app-api data.png](API%20REST%2044dda65bdc8b4676ace674e53adf0459/bicho_bo_app-api_data.png)
+![bicho bão app-api data.png](docs/bicho_bo_app-api_data.png)
