@@ -2,8 +2,6 @@ setup:
   addons:
     - plan: cloudampq:lemur
       as: MESSAGE_BROKER
-  web: yarn install
 build:
-  web: yarn build
-run:
-  web: yarn start:prod
+  docker:
+    web: Dockerfile
