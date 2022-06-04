@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:14
 ENV NODE_ENV=production
 WORKDIR /app
 COPY ["package.json", "yarn.lock", "./"]
