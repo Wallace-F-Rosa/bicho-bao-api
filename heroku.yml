@@ -1,0 +1,7 @@
+setup:
+  addons:
+    - plan: cloudampq:lemur
+      as: MESSAGE_BROKER
+build:
+  docker:
+    web: Dockerfile
