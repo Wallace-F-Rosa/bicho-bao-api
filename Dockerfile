@@ -1,3 +1,4 @@
+# build app
 FROM node:lts as builder
 ENV NODE_ENV build
 WORKDIR /app
@@ -6,7 +7,7 @@ RUN yarn install
 COPY . .
 RUN yarn build
 
-# -- start
+# start in production mode
 
 FROM node:lts
 ENV NODE_ENV production
