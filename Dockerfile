@@ -9,7 +9,7 @@ RUN yarn build
 
 # start in production mode
 
-FROM node:lts
+FROM node:lts-alpine
 ENV NODE_ENV production
 WORKDIR /app
 COPY --from=builder /app/package*.json ./
