@@ -32,3 +32,50 @@ export interface Identifier {
   type: IdentifierType;
   value: string;
 }
+
+export const enum NameUse {
+  USUAL = 'usual',
+  OFFICIAL = 'official',
+  TEMP = 'temp',
+  NICKNAME = 'nickname',
+  ANONYMOUS = 'anonymous',
+  OLD = 'old',
+  MAIDEN = 'maiden',
+}
+
+export interface HumanName {
+  use: NameUse;
+  text: string;
+  family: string;
+}
+
+export const enum ContactPointSystem {
+  PHONE = 'phone',
+  FAX = 'fax',
+  EMAIL = 'email',
+  PAGER = 'pager',
+  URL = 'url',
+  SMS = 'sms',
+  OTHER = 'other',
+}
+
+export const enum ContactPointUse {
+  HOME = 'home',
+  WORK = 'work',
+  TEMP = 'temp',
+  OLD = 'old',
+  MOBILE = 'mobile',
+}
+
+export interface ContactPoint {
+  system: ContactPointSystem;
+  value: string;
+  use: ContactPointUse;
+}
+
+export interface Person {
+  identifier: Identifier;
+  active: boolean;
+  name: HumanName;
+  telecom: ContactPoint;
+}
