@@ -27,8 +27,8 @@ export enum IdentifierUse {
   OLD = 'old',
 }
 
-export type Identifier = {
+export interface Identifier {
   use: IdentifierUse;
   type: IdentifierType;
   value: string;
-};
+}

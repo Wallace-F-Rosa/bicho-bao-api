@@ -21,7 +21,8 @@
     "paths": {
       "@tests/*": ["./test/*"],
       "@src/*": ["./src/*"],
-      "@config/*": ["./src/config/*"]
+      "@config/*": ["./src/config/*"],
+      "@fhir/*": ["./src/fhir/*"]
     }
   }
 }
