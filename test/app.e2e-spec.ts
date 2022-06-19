@@ -5,9 +5,17 @@ import { UserService } from '@src/user/user.service';
 import { UserModule } from '@src/user/user.module';
 import { AppModule } from '@src/app.module';
 import { AppService } from '@src/app.service';
+import { faker } from '@faker-js/faker';
 
-import { Identifier, IdentifierType, IdentifierUse } from '@fhir/Identifier';
-import { HumanName, NameUse } from '@fhir/HumanName';
+import {
+  IdentifierType,
+  IdentifierUse,
+  NameUse,
+  ContactPointSystem,
+  ContactPointUse,
+  AdministrativeGender,
+} from '@fhir/Person';
+import { CreateUserDto } from '@src/user/dto/create-user.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -15,6 +23,10 @@ describe('AppController (e2e)', () => {
   let appService: AppService;
   const usersMockCreate = [];
   const usersMockList = [];
+
+  beforeAll(() => {
+    faker.locale = 'pt_BR';
+  });
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -38,30 +50,41 @@ describe('AppController (e2e)', () => {
   describe('/users', () => {
     describe('create', () => {
       it('valid user', async () => {
-        const userData = {
-          username: 'teste',
-          password: '123teste',
-          roles: ['admin'],
-          personalData: {
-            identifier: {
-              use: IdentifierUse.OFFICIAL,
-              type: IdentifierType.TAX_ID,
-              value: '844.977.040-84',
-            },
-            active: true,
-            name: {
-              use: NameUse.OFFICIAL,
-              text: 'Testinho Unit Test',
-              family: 'Unit Test',
-            },
+        const personalData = {
+          identifier: {
+            use: IdentifierUse.OFFICIAL,
+            type: IdentifierType.TAX_ID,
+            value: '844.977.040-84',
           },
+          active: true,
+          name: {
+            use: NameUse.OFFICIAL,
+            text: faker.name.findName(),
+          },
+          telecom: {
+            system: ContactPointSystem.PHONE,
+            value: faker.phone
+              .phoneNumber('+## ### 9#### ####')
+              .replace(/\s/g, ''),
+            use: ContactPointUse.HOME,
+          },
+          gender: AdministrativeGender.OTHER,
+          birthDate: Date.now(),
+        };
+        const userData = {
+          username: faker.internet.userName(),
+          password: faker.internet.password(),
+          email: faker.internet.email(),
+          roles: ['admin'],
+          personalData,
         };
         const res = await request(app.getHttpServer())
           .post('/users')
           .send(userData);
+        console.log(userData);
         expect(res.status).toEqual(204);
         const { body } = res;
-        expect(body).toMatchObject(userData);
+        expect(body).toMatchObject<CreateUserDto>(userData);
       });
     });
   });
