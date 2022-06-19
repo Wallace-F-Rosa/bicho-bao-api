@@ -76,6 +76,7 @@ yarn start:prod
 npm start:prod
 ```
 
+A aplicação estará rodando em `localhost:3000`.
 # Esquema lógico do banco de dados
 
 ![bicho bão app-api data.png](docs/bicho_bo_app-api_data.png)
