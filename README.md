@@ -1,4 +1,4 @@
-# API REST
+# Bicho Bão API
 
 Esta API REST funcionará como Gateway para os microsserviços com as funcionalidades do sistema. Neste projeto a API controlará os usuários da aplicação e suas permissões de acesso aos sistemas. 
 
