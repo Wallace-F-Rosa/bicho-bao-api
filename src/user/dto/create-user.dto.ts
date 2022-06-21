@@ -2,7 +2,7 @@ import { Person } from '@src/fhir/Person';
 
 export class CreateUserDto {
   username: string;
-  passwordHash: string;
+  password: string;
   email: string;
   roles: string[];
   personalData: Person;
