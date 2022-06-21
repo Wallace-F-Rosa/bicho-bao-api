@@ -46,7 +46,6 @@ export const enum NameUse {
 export interface HumanName {
   use: NameUse;
   text: string;
-  family: string;
 }
 
 export const enum ContactPointSystem {
