@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as bcrypt from 'bcrypt';
 import {
   AdministrativeGender,
   CommonLanguages,
@@ -9,11 +10,14 @@ import {
   IdentifierUse,
   MimeType,
   NameUse,
-  Person,
 } from '@fhir/Person';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import {
+  PatientRelationshipType,
+  RelatedPerson,
+} from '@src/fhir/RelatedPerson';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -34,7 +38,7 @@ describe('UserController', () => {
   describe('create user', () => {
     describe('valid user', () => {
       it('owner', async () => {
-        const personalData: Person = {
+        const personalData: RelatedPerson = {
           identifier: {
             use: IdentifierUse.OFFICIAL,
             type: IdentifierType.TAX_ID,
@@ -61,6 +65,7 @@ describe('UserController', () => {
           communication: {
             language: CommonLanguages.PORTUGUESE_BRAZIL,
           },
+          relationship: PatientRelationshipType.ANIMAL_OWNER,
         };
         const userData: CreateUserDto = {
           username: faker.internet.userName(),
@@ -69,6 +74,8 @@ describe('UserController', () => {
           roles: ['admin'],
           personalData,
         };
+        const createdUser = controller.create(userData);
+        userData.passwordHash = UserService.getPasswordHash(userData.password);
         expect(controller.create(userData)).toMatchObject(userData);
       });
     });
