@@ -5,7 +5,8 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db { provider = "postgresql"
+datasource db {
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -17,19 +18,92 @@ model PersonIdentifier {
   person Person?
 }
 
+model Address {
+  use          String
+  type         String
+  line         String
+  city         String
+  district     String
+  state        String
+  postalCode   String
+  country      String
+  personId     Int
+  person       Person    @relation(fields: [personId], references: [id])
+  period_start DateTime?
+  period_end   DateTime?
+
+  @@id([personId, line, postalCode])
+}
+
+model HumanName {
+  id       Int     @id @default(autoincrement())
+  use      String
+  text     String
+  family   String
+  personId Int     @unique
+  person   Person? @relation
+
+  @@unique([personId, text])
+}
+
+model ContactPoint {
+  system    String
+  value     String
+  use       String
+  personId  Int
+  contactOf Person @relation(fields: [personId], references: [id])
+
+  @@id([personId, value])
+}
+
+model Attachment {
+  id          Int     @id @default(autoincrement())
+  contentType String
+  url         String
+  personId    Int?
+  person      Person? @relation
+
+  @@unique([personId, url])
+}
+
+model Communication {
+  id       Int                   @id @default(autoincrement())
+  language String                @unique
+  speakers PersonCommunication[]
+}
+
 model Person {
-  id           Int              @id @default(autoincrement())
-  identifierId Int              @unique
-  identifier   PersonIdentifier @relation(fields: [identifierId], references: [id])
-  userId       Int              @unique
-  user         User             @relation(fields: [userId], references: [id])
+  id            Int                   @id @default(autoincrement())
+  identifierId  Int                   @unique
+  identifier    PersonIdentifier      @relation(fields: [identifierId], references: [id])
+  active        Boolean
+  nameId        Int                   @unique
+  name          HumanName             @relation(fields: [nameId], references: [id])
+  telecom       ContactPoint[]        @relation
+  gender        String
+  birthDate     DateTime?
+  photoId       Int?                  @unique
+  photo         Attachment?           @relation(fields: [photoId], references: [id])
+  addresses     Address[]
+  communication PersonCommunication[]
+  userId        Int                   @unique
+  user          User                  @relation(fields: [userId], references: [id])
+}
+
+model PersonCommunication {
+  personId        Int
+  person          Person        @relation(fields: [personId], references: [id])
+  communicationId Int
+  communication   Communication @relation(fields: [communicationId], references: [id])
+
+  @@id([personId, communicationId])
 }
 
 model Permission {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  description      String
-  roles RolesPermissions[]
+  id          Int                @id @default(autoincrement())
+  name        String             @unique
+  description String
+  roles       RolesPermissions[]
 }
 
 model RolesPermissions {
@@ -42,26 +116,28 @@ model RolesPermissions {
 }
 
 model Role {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  description      String
+  id          Int                @id @default(autoincrement())
+  name        String             @unique
+  description String
   permissions RolesPermissions[]
-  users UserRoles[]
+  users       UserRoles[]
 }
 
 model UserRoles {
   userId Int
-  user User @relation(fields:[userId], references:[id])
+  user   User @relation(fields: [userId], references: [id])
   roleId Int
-  role Role @relation(fields:[roleId], references:[id])
+  role   Role @relation(fields: [roleId], references: [id])
+
   @@id([userId, roleId])
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
+  id           Int         @id @default(autoincrement())
+  email        String      @unique
   username     String
   passwordHash String
   Person       Person?
-  roles UserRoles[]
+  roles        UserRoles[]
+
 }
