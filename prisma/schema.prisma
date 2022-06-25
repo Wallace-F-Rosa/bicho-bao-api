@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db { provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PersonIdentifier {
+  id     Int     @id @default(autoincrement())
+  use    String
+  type   String
+  value  String  @unique
+  person Person?
+}
+
+model Person {
+  id           Int              @id @default(autoincrement())
+  identifierId Int              @unique
+  identifier   PersonIdentifier @relation(fields: [identifierId], references: [id])
+  userId       Int              @unique
+  user         User             @relation(fields: [userId], references: [id])
+}
+
+model Permission {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  description      String
+  roles RolesPermissions[]
+}
+
+model RolesPermissions {
+  roleId       Int
+  role         Role       @relation(fields: [roleId], references: [id])
+  permissionId Int
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+}
+
+model Role {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  description      String
+  permissions RolesPermissions[]
+  users UserRoles[]
+}
+
+model UserRoles {
+  userId Int
+  user User @relation(fields:[userId], references:[id])
+  roleId Int
+  role Role @relation(fields:[roleId], references:[id])
+  @@id([userId, roleId])
+}
+
+model User {
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
+  username     String
+  passwordHash String
+  Person       Person?
+  roles UserRoles[]
+}
