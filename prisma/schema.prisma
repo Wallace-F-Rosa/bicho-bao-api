@@ -137,7 +137,6 @@ model User {
   email        String      @unique
   username     String
   passwordHash String
-  Person       Person?
+  personalData Person?
   roles        UserRoles[]
-
 }
