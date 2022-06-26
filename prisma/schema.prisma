@@ -39,8 +39,7 @@ model HumanName {
   id       Int     @id @default(autoincrement())
   use      String
   text     String
-  family   String
-  personId Int     @unique
+  personId Int?    @unique
   person   Person? @relation
 
   @@unique([personId, text])
@@ -86,6 +85,7 @@ model Person {
   photo         Attachment?      @relation(fields: [photoId], references: [id])
   addresses     Address[]
   communication Communication[]
+  relationship  String?
   userId        Int              @unique
   user          User             @relation(fields: [userId], references: [id])
 }
