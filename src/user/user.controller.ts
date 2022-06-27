@@ -10,12 +10,11 @@ import {
 import { UserService } from './user.service';
 import { User, Prisma } from '@prisma/client';
 
-import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   async createOwner(@Body() createUserDto: CreateUserDto): Promise<User> {
