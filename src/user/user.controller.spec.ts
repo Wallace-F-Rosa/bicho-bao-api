@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as bcrypt from 'bcrypt';
 import {
   AdministrativeGender,
   CommonLanguages,
@@ -11,13 +10,12 @@ import {
   MimeType,
   NameUse,
 } from '@fhir/Person';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import {
   PatientRelationshipType,
-  RelatedPerson,
 } from '@src/fhir/RelatedPerson';
+import { PrismaService } from '@src/prisma/prisma.service';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -25,7 +23,7 @@ describe('UserController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [UserService],
+      providers: [UserService, PrismaService],
     }).compile();
 
     controller = module.get<UserController>(UserController);
@@ -62,21 +60,19 @@ describe('UserController', () => {
             contentType: MimeType.JPEG,
             url: faker.internet.avatar(),
           },
-          communication: {
+          communication: [{
             language: CommonLanguages.PORTUGUESE_BRAZIL,
-          },
+          }],
           relationship: PatientRelationshipType.ANIMAL_OWNER,
         };
         const userData = {
           username: faker.internet.userName(),
-          passwordHash: await UserService.getPasswordHash(
-            faker.internet.password(),
-          ),
+          password: faker.internet.password(),
           email: faker.internet.email(),
           personalData,
         };
         const createdUser = controller.createOwner(userData);
-        expect(controller.createOwner(userData)).toMatchObject(userData);
+        expect(createdUser).toMatchObject(userData);
       });
     });
   });
