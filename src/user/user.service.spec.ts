@@ -83,7 +83,7 @@ describe('UserService', () => {
           email: faker.internet.email(),
           personalData,
         };
-        const user = await service.createOwnerUser(userData);
+        const user = await service.create(userData, "owner");
         console.log(user);
         expect(user).toMatchObject(userData);
       });

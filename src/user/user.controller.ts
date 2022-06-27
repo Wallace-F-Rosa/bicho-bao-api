@@ -18,7 +18,7 @@ export class UserController {
 
   @Post()
   async createOwner(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.createOwnerUser({
+    return this.userService.create({
       username: createUserDto.username,
       passwordHash: await UserService.getPasswordHash(createUserDto.password),
       email: createUserDto.email,
@@ -51,7 +51,7 @@ export class UserController {
           relationship: createUserDto.personalData.relationship,
         },
       },
-    });
+    }, "owner");
   }
 
   @Get()

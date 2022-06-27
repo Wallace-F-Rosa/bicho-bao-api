@@ -23,11 +23,6 @@ export class UserService {
       },
     });
   }
-  async createOwnerUser(
-    data: Prisma.UserCreateWithoutRolesInput,
-  ): Promise<User> {
-    return this.create(data, "owner");
-  }
 
   async findAll(params: {
     skip?: number;
