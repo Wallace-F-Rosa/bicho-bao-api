@@ -7,29 +7,27 @@ import { User, Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
-  async createOwnerUser(
-    data: Prisma.UserCreateWithoutRolesInput,
-  ): Promise<User> {
+  async create(data: Prisma.UserCreateWithoutRolesInput, role: string): Promise<User> {
     return this.prisma.user.create({
       data: {
         ...data,
         roles: {
           connect: [
             {
-              name: 'owner',
+              name: role,
             },
           ],
         },
       },
     });
   }
-  // async create(data: Prisma.UserCreateInput): Promise<User> {
-  //   return this.prisma.user.create({
-  //     data,
-  //   });
-  // }
+  async createOwnerUser(
+    data: Prisma.UserCreateWithoutRolesInput,
+  ): Promise<User> {
+    return this.create(data, "owner");
+  }
 
   async findAll(params: {
     skip?: number;
