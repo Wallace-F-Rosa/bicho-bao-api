@@ -93,7 +93,7 @@ describe('AppController (e2e)', () => {
           personalData,
         };
         const res = await request(app.getHttpServer())
-          .post('/users/owner')
+          .post('/user/owner')
           .send(userData);
         expect(res.status).toEqual(204);
         const { body } = res;
