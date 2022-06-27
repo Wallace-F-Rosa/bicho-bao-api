@@ -16,7 +16,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Post()
+  @Post('owner')
   async createOwner(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create({
       username: createUserDto.username,
