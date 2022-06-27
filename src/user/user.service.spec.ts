@@ -77,7 +77,7 @@ describe('UserService', () => {
         };
         const userData = {
           username: faker.internet.userName(),
-          passwordHash: await service.getPasswordHash(
+          passwordHash: await UserService.getPasswordHash(
             faker.internet.password(),
           ),
           email: faker.internet.email(),

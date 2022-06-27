@@ -56,7 +56,7 @@ export class UserService {
     return this.prisma.user.delete({ where });
   }
 
-  public async getPasswordHash(password: string): Promise<string> {
+  public static async getPasswordHash(password: string): Promise<string> {
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(password, saltOrRounds);
     return hash;
