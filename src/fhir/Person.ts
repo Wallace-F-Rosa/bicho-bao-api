@@ -1,3 +1,6 @@
+import { Qualification } from './Practitioner';
+import { PatientRelationshipType } from './RelatedPerson';
+
 export const enum IdentifierType {
   DRIVERS_LINCENSE = 'DL',
   PASSPORT_NUMBER = 'PPN',
@@ -191,5 +194,7 @@ export interface Person {
   gender: AdministrativeGender;
   birthDate: Date;
   photo: Attachment;
-  communication: Communication;
+  communication: Communication[];
+  relationship: PatientRelationshipType;
+  qualification?: Qualification;
 }
