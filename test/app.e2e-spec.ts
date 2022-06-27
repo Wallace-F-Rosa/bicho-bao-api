@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { UserService } from '@src/user/user.service';
 import { UserModule } from '@src/user/user.module';
 import { AppModule } from '@src/app.module';
 import { AppService } from '@src/app.service';
@@ -14,12 +13,18 @@ import {
   ContactPointSystem,
   ContactPointUse,
   AdministrativeGender,
+  CommonLanguages,
+  MimeType
 } from '@fhir/Person';
 import { CreateUserDto } from '@src/user/dto/create-user.dto';
+import { PatientRelationshipType } from '@src/fhir/RelatedPerson';
+import { UserController } from '@src/user/user.controller';
+import { PrismaService } from '@src/prisma/prisma.service';
+import { UserService } from '@src/user/user.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let userService: UserService;
+  let userController: UserController;
   let appService: AppService;
   const usersMockCreate = [];
   const usersMockList = [];
@@ -31,9 +36,11 @@ describe('AppController (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule, UserModule],
+      controllers: [UserController],
+      providers: [PrismaService, UserService]
     }).compile();
 
-    userService = new UserService();
+    userController = moduleFixture.get<UserController>(UserController);
     appService = new AppService();
 
     app = moduleFixture.createNestApplication();
@@ -49,7 +56,7 @@ describe('AppController (e2e)', () => {
 
   describe('/users', () => {
     describe('create', () => {
-      it('valid user', async () => {
+      it('valid owner user', async () => {
         const personalData = {
           identifier: {
             use: IdentifierUse.OFFICIAL,
@@ -68,20 +75,26 @@ describe('AppController (e2e)', () => {
               .replace(/\s/g, ''),
             use: ContactPointUse.HOME,
           },
+          photo: {
+            contentType: MimeType.JPEG,
+            url: faker.internet.avatar(),
+          },
           gender: AdministrativeGender.OTHER,
-          birthDate: Date.now(),
+          birthDate: new Date(),
+          communication: [{
+            language: CommonLanguages.PORTUGUESE_BRAZIL
+          }],
+          relationship: PatientRelationshipType.ANIMAL_OWNER
         };
         const userData = {
           username: faker.internet.userName(),
           password: faker.internet.password(),
           email: faker.internet.email(),
-          roles: ['admin'],
           personalData,
         };
         const res = await request(app.getHttpServer())
-          .post('/users')
+          .post('/users/owner')
           .send(userData);
-        console.log(userData);
         expect(res.status).toEqual(204);
         const { body } = res;
         expect(body).toMatchObject<CreateUserDto>(userData);
